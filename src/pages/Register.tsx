@@ -38,7 +38,11 @@ const Register = () => {
       toast.error(error.message);
     } else {
       toast.success("নিবন্ধন সফল হয়েছে!");
-      navigate(role === "seller" ? "/dashboard/seller" : "/dashboard/buyer");
+      if (role === "seller") {
+        navigate("/dashboard/seller");
+      } else {
+        navigate("/dashboard/buyer");
+      }
     }
   };
 
