@@ -44,6 +44,11 @@ const Header = () => {
         <div className="hidden md:flex items-center gap-2">
           {user ? (
             <>
+              <Link to="/cart">
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                </Button>
+              </Link>
               <Link to={dashboardLink}>
                 <Button variant="outline" size="sm" className="gap-1.5">
                   <LayoutDashboard className="h-4 w-4" />
