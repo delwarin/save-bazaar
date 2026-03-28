@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ShoppingBag, User, LogIn } from "lucide-react";
+import { Menu, X, ShoppingBag, LogIn, LogOut, LayoutDashboard } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { href: "/", label: "হোম" },
@@ -14,27 +15,25 @@ const navLinks = [
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { user, role, profile, signOut } = useAuth();
+
+  const dashboardLink = role === "admin" ? "/dashboard/admin" : role === "seller" ? "/dashboard/seller" : "/dashboard/buyer";
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <ShoppingBag className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold text-gradient-primary">
-            সলপো
-          </span>
+          <span className="text-xl font-bold text-gradient-primary">সলপো</span>
         </Link>
 
-        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted ${
-                location.pathname === link.href
-                  ? "text-primary bg-muted"
-                  : "text-muted-foreground"
+                location.pathname === link.href ? "text-primary bg-muted" : "text-muted-foreground"
               }`}
             >
               {link.label}
@@ -43,27 +42,39 @@ const Header = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
-          <Link to="/login">
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <LogIn className="h-4 w-4" />
-              লগইন
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button variant="hero" size="sm">নিবন্ধন করুন</Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to={dashboardLink}>
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <LayoutDashboard className="h-4 w-4" />
+                  {profile?.full_name || "ড্যাশবোর্ড"}
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" className="gap-1.5" onClick={signOut}>
+                <LogOut className="h-4 w-4" />
+                লগআউট
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <LogIn className="h-4 w-4" />
+                  লগইন
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button variant="hero" size="sm">নিবন্ধন করুন</Button>
+              </Link>
+            </>
+          )}
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden p-2 text-foreground"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
+        <button className="md:hidden p-2 text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
 
-      {/* Mobile Nav */}
       {mobileOpen && (
         <div className="md:hidden border-t bg-background animate-fade-in-up">
           <nav className="container py-4 flex flex-col gap-1">
@@ -73,24 +84,39 @@ const Header = () => {
                 to={link.href}
                 onClick={() => setMobileOpen(false)}
                 className={`px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-                  location.pathname === link.href
-                    ? "text-primary bg-muted"
-                    : "text-muted-foreground hover:bg-muted"
+                  location.pathname === link.href ? "text-primary bg-muted" : "text-muted-foreground hover:bg-muted"
                 }`}
               >
                 {link.label}
               </Link>
             ))}
             <div className="flex gap-2 mt-3 pt-3 border-t">
-              <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full gap-1.5">
-                  <LogIn className="h-4 w-4" />
-                  লগইন
-                </Button>
-              </Link>
-              <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
-                <Button variant="hero" size="sm" className="w-full">নিবন্ধন</Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to={dashboardLink} className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full gap-1.5">
+                      <LayoutDashboard className="h-4 w-4" />
+                      ড্যাশবোর্ড
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" className="flex-1 gap-1.5" onClick={() => { signOut(); setMobileOpen(false); }}>
+                    <LogOut className="h-4 w-4" />
+                    লগআউট
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full gap-1.5">
+                      <LogIn className="h-4 w-4" />
+                      লগইন
+                    </Button>
+                  </Link>
+                  <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="hero" size="sm" className="w-full">নিবন্ধন</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
