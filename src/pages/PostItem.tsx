@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, ArrowLeft } from "lucide-react";
+import { Upload, ArrowLeft, X, ImagePlus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,7 +22,50 @@ const PostItem = () => {
   const [expiryDate, setExpiryDate] = useState("");
   const [division, setDivision] = useState("");
   const [address, setAddress] = useState("");
-  const [isFree, setIsFree] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (imageFiles.length + files.length > 5) {
+      toast.error("সর্বোচ্চ ৫টি ছবি আপলোড করা যাবে");
+      return;
+    }
+    const newFiles = [...imageFiles, ...files];
+    setImageFiles(newFiles);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setImagePreviews((prev) => [...prev, ev.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeImage = (index: number) => {
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadImages = async (): Promise<string[]> => {
+    if (!user || imageFiles.length === 0) return [];
+    const urls: string[] = [];
+    for (const file of imageFiles) {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("item-images").upload(path, file);
+      if (error) {
+        toast.error("ছবি আপলোড ব্যর্থ: " + error.message);
+        continue;
+      }
+      const { data: urlData } = supabase.storage.from("item-images").getPublicUrl(path);
+      urls.push(urlData.publicUrl);
+    }
+    return urls;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +78,10 @@ const PostItem = () => {
       return;
     }
     setLoading(true);
+
+    const uploadedUrls = await uploadImages();
     const priceNum = parseFloat(price) || 0;
+
     const { error } = await supabase.from("items").insert({
       title,
       description,
@@ -47,7 +93,10 @@ const PostItem = () => {
       address,
       seller_id: user.id,
       status: "active",
-    });
+      image_url: uploadedUrls[0] || null,
+      images: uploadedUrls,
+    } as any);
+
     setLoading(false);
     if (error) {
       toast.error("পোস্ট করতে সমস্যা হয়েছে: " + error.message);
@@ -72,6 +121,48 @@ const PostItem = () => {
 
       <form onSubmit={handleSubmit} className="container max-w-2xl py-8">
         <div className="rounded-xl border bg-card p-6 space-y-5">
+          {/* Image Upload */}
+          <div className="space-y-2">
+            <Label>পণ্যের ছবি (সর্বোচ্চ ৫টি)</Label>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+              {imagePreviews.map((src, i) => (
+                <div key={i} className="relative aspect-square rounded-lg overflow-hidden border bg-muted group">
+                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="absolute top-1 right-1 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                  {i === 0 && (
+                    <span className="absolute bottom-1 left-1 text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                      প্রধান
+                    </span>
+                  )}
+                </div>
+              ))}
+              {imageFiles.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                >
+                  <ImagePlus className="h-6 w-6" />
+                  <span className="text-[10px]">ছবি যোগ</span>
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={handleImageSelect}
+            />
+          </div>
+
           <div className="space-y-2">
             <Label>পণ্যের নাম</Label>
             <Input placeholder="যেমন: বিরিয়ানি - ৫ প্যাক" value={title} onChange={(e) => setTitle(e.target.value)} required />

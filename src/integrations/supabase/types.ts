@@ -24,6 +24,7 @@ export type Database = {
           expiry_date: string | null
           id: string
           image_url: string | null
+          images: string[] | null
           is_free: boolean | null
           price: number | null
           seller_id: string
@@ -40,6 +41,7 @@ export type Database = {
           expiry_date?: string | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
           is_free?: boolean | null
           price?: number | null
           seller_id: string
@@ -56,6 +58,7 @@ export type Database = {
           expiry_date?: string | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
           is_free?: boolean | null
           price?: number | null
           seller_id?: string

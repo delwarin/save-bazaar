@@ -103,7 +103,7 @@ const SellerDashboard = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((item) => (
-              <ProductCard
+                <ProductCard
                 key={item.id}
                 item={{
                   id: item.id,
@@ -112,6 +112,7 @@ const SellerDashboard = () => {
                   price: item.price ?? 0,
                   originalPrice: undefined,
                   image: item.image_url || "/placeholder.svg",
+                  images: (item as any).images || [],
                   sellerName: sellerName,
                   location: item.division,
                   postedAt: new Date(item.created_at).toLocaleDateString("bn-BD"),
