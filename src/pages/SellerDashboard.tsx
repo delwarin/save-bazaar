@@ -108,12 +108,14 @@ const SellerDashboard = () => {
                 item={{
                   id: item.id,
                   title: item.title,
+                  description: item.description || "",
                   price: item.price ?? 0,
                   originalPrice: undefined,
                   image: item.image_url || "/placeholder.svg",
-                  seller: sellerName,
+                  sellerName: sellerName,
                   location: item.division,
-                  expiryDate: item.expiry_date || undefined,
+                  postedAt: new Date(item.created_at).toLocaleDateString("bn-BD"),
+                  expiresAt: item.expiry_date || undefined,
                   isFree: item.is_free ?? false,
                   category: item.category as any,
                 }}
