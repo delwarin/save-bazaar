@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import CategoryCard from "@/components/CategoryCard";
-import ProductCard from "@/components/ProductCard";
+import ProductCard, { ProductItem } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { sampleProducts } from "@/data/sampleData";
 import { UtensilsCrossed, ShoppingCart, Shirt, BookOpen, ArrowRight, Recycle, Heart, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-illustration.jpg";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-illustration.jpg";
 
 const categories = [
