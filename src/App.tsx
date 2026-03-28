@@ -12,6 +12,8 @@ import SellerDashboard from "./pages/SellerDashboard";
 import BuyerDashboard from "./pages/BuyerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import PostItem from "./pages/PostItem";
+import AdminLogin from "./pages/AdminLogin";
+import AdminRegister from "./pages/AdminRegister";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/dashboard/buyer" element={<BuyerDashboard />} />
             <Route path="/dashboard/admin" element={<AdminDashboard />} />
             <Route path="/dashboard/seller/post" element={<PostItem />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/register" element={<AdminRegister />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

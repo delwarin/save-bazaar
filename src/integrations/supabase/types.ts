@@ -166,6 +166,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      register_admin: {
+        Args: { _secret: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "buyer" | "seller"
