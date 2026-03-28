@@ -91,7 +91,7 @@ const Index = () => {
             <div className="hidden md:block">
               <img
                 src={heroImage}
-                alt="সলপো - সম্প্রদায় ভাগাভাগি"
+                alt="অপচয় - সম্প্রদায় ভাগাভাগি"
                 className="rounded-2xl shadow-2xl w-full"
                 width={1280}
                 height={720}
