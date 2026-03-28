@@ -24,7 +24,7 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <ShoppingBag className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold text-gradient-primary">সলপো</span>
+          <span className="text-xl font-bold text-gradient-primary">অপচয়</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
