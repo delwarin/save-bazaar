@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import PostItem from "./pages/PostItem";
 import AdminLogin from "./pages/AdminLogin";
 import AdminRegister from "./pages/AdminRegister";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
