@@ -1,0 +1,125 @@
+import { ProductItem } from "@/components/ProductCard";
+
+export const sampleProducts: ProductItem[] = [
+  {
+    id: "1",
+    title: "বিরিয়ানি - ৫ প্যাক",
+    description: "আজকের তৈরি বিরিয়ানি, আগামীকাল মেয়াদ শেষ। তাজা ও সুস্বাদু।",
+    price: 50,
+    originalPrice: 200,
+    isFree: false,
+    category: "food",
+    location: "ঢাকা, গুলশান",
+    postedAt: "২ ঘণ্টা আগে",
+    expiresAt: "আগামীকাল",
+    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=300&fit=crop",
+    sellerName: "স্টার কাবাব",
+  },
+  {
+    id: "2",
+    title: "ফ্রেশ সবজি প্যাক",
+    description: "বিভিন্ন ধরনের তাজা সবজি। দ্রুত বিক্রি করতে হবে।",
+    price: 30,
+    originalPrice: 120,
+    isFree: false,
+    category: "grocery",
+    location: "চট্টগ্রাম",
+    postedAt: "৫ ঘণ্টা আগে",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop",
+    sellerName: "গ্রিন মার্কেট",
+  },
+  {
+    id: "3",
+    title: "পুরুষ শার্ট - ৩টি",
+    description: "ভালো অবস্থায় আছে। সাইজ: L। বিনামূল্যে নিতে পারবেন।",
+    price: 0,
+    isFree: true,
+    category: "clothes",
+    location: "রাজশাহী",
+    postedAt: "১ দিন আগে",
+    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=300&fit=crop",
+    sellerName: "আরিফ হোসেন",
+  },
+  {
+    id: "4",
+    title: "HSC পদার্থবিজ্ঞান বই",
+    description: "HSC পদার্থবিজ্ঞান পাঠ্যবই। খুব ভালো অবস্থায় আছে।",
+    price: 0,
+    isFree: true,
+    category: "books",
+    location: "সিলেট",
+    postedAt: "৩ দিন আগে",
+    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop",
+    sellerName: "তানভীর আহমেদ",
+  },
+  {
+    id: "5",
+    title: "কেক ও পেস্ট্রি - ১০ পিস",
+    description: "আজকের তৈরি কেক ও পেস্ট্রি, রাতের মধ্যে বিক্রি করতে হবে।",
+    price: 100,
+    originalPrice: 500,
+    isFree: false,
+    category: "food",
+    location: "ঢাকা, মিরপুর",
+    postedAt: "১ ঘণ্টা আগে",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop",
+    sellerName: "সুইট ড্রিমস বেকারি",
+  },
+  {
+    id: "6",
+    title: "মহিলা শাড়ি - ৫টি",
+    description: "সুন্দর ডিজাইনের শাড়ি, শুধু ডেলিভারি খরচ লাগবে।",
+    price: 0,
+    isFree: true,
+    category: "clothes",
+    location: "খুলনা",
+    postedAt: "২ দিন আগে",
+    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=300&fit=crop",
+    sellerName: "ফাতেমা বেগম",
+  },
+  {
+    id: "7",
+    title: "চাল ও ডাল - ৫ কেজি",
+    description: "উদ্বৃত্ত মুদি পণ্য, কম দামে বিক্রি হবে।",
+    price: 80,
+    originalPrice: 300,
+    isFree: false,
+    category: "grocery",
+    location: "বরিশাল",
+    postedAt: "৬ ঘণ্টা আগে",
+    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop",
+    sellerName: "জনতা স্টোর",
+  },
+  {
+    id: "8",
+    title: "প্রোগ্রামিং বই সেট",
+    description: "Python, JavaScript ও C++ বই। শিক্ষার্থীদের জন্য উপযুক্ত।",
+    price: 0,
+    isFree: true,
+    category: "books",
+    location: "ঢাকা, উত্তরা",
+    postedAt: "৪ দিন আগে",
+    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=300&fit=crop",
+    sellerName: "রাফি ইসলাম",
+  },
+];
+
+export const getCategoryLabel = (cat: string) => {
+  const labels: Record<string, string> = {
+    food: "খাবার",
+    grocery: "মুদি দোকান",
+    clothes: "পোশাক",
+    books: "বই",
+  };
+  return labels[cat] || cat;
+};
+
+export const getCategoryDescription = (cat: string) => {
+  const descs: Record<string, string> = {
+    food: "রেস্টুরেন্ট ও খাবারের দোকান থেকে মেয়াদোত্তীর্ণ হওয়ার আগেই সাশ্রয়ী মূল্যে খাবার কিনুন",
+    grocery: "মুদি দোকান থেকে উদ্বৃত্ত পণ্য কম দামে সংগ্রহ করুন",
+    clothes: "পুরাতন কাপড় বিনামূল্যে পান, শুধু ডেলিভারি খরচ",
+    books: "পুরাতন বই বিনামূল্যে সংগ্রহ করুন, জ্ঞান ভাগ করুন",
+  };
+  return descs[cat] || "";
+};
