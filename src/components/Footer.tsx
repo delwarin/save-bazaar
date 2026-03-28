@@ -8,10 +8,10 @@ const Footer = () => (
         <div className="md:col-span-2">
           <Link to="/" className="flex items-center gap-2 mb-3">
             <ShoppingBag className="h-6 w-6 text-primary" />
-            <span className="text-lg font-bold text-gradient-primary">বাংলাদেশি পার্সপেক্টিভ</span>
+            <span className="text-lg font-bold text-gradient-primary">সলপো</span>
           </Link>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
-            অপচয় কমান, সম্প্রদায়কে সাহায্য করুন। মেয়াদোত্তীর্ণ হওয়ার আগেই খাবার বিক্রি করুন, পুরাতন কাপড় ও বই দান করুন বা সাশ্রয়ী মূল্যে বিক্রি করুন।
+            অপচয় কমান, সম্প্রদায়কে সাহায্য করুন। মেয়াদোত্তীর্ণ হওয়ার আগেই খাবার বিক্রি করুন, পুরাতন কাপড় ও বই দান করুন বা সাশ্রয়ী মূল্যে বিক্রি করুন। সলপো আপনার পাশে।
           </p>
         </div>
 
@@ -37,7 +37,7 @@ const Footer = () => (
 
       <div className="mt-8 pt-6 border-t text-center text-sm text-muted-foreground flex items-center justify-center gap-1">
         <Heart className="h-3.5 w-3.5 text-destructive" />
-        <span>বাংলাদেশি পার্সপেক্টিভ © {new Date().getFullYear()}</span>
+        <span>সলপো © {new Date().getFullYear()}</span>
       </div>
     </div>
   </footer>

@@ -21,7 +21,7 @@ const Header = () => {
         <Link to="/" className="flex items-center gap-2">
           <ShoppingBag className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold text-gradient-primary">
-            বাংলাদেশি পার্সপেক্টিভ
+            সলপো
           </span>
         </Link>
 
