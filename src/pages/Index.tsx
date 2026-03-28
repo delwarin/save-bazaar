@@ -1,11 +1,12 @@
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import CategoryCard from "@/components/CategoryCard";
-import ProductCard from "@/components/ProductCard";
+import ProductCard, { ProductItem } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { sampleProducts } from "@/data/sampleData";
 import { UtensilsCrossed, ShoppingCart, Shirt, BookOpen, ArrowRight, Recycle, Heart, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-illustration.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   {
@@ -57,7 +58,45 @@ const howItWorks = [
 ];
 
 const Index = () => {
-  const featuredProducts = sampleProducts.slice(0, 4);
+  const [featuredProducts, setFeaturedProducts] = useState<ProductItem[]>([]);
+
+  useEffect(() => {
+    const fetchRecent = async () => {
+      const { data } = await supabase
+        .from("items")
+        .select("*")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (data) {
+        const sellerIds = [...new Set(data.map((i) => i.seller_id))];
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name")
+          .in("user_id", sellerIds);
+        const profileMap = new Map(profiles?.map((p) => [p.user_id, p.full_name]) || []);
+
+        setFeaturedProducts(
+          data.map((item) => ({
+            id: item.id,
+            title: item.title,
+            description: item.description || "",
+            price: item.price ?? 0,
+            isFree: item.is_free ?? false,
+            category: item.category as any,
+            location: item.division,
+            postedAt: new Date(item.created_at).toLocaleDateString("bn-BD"),
+            expiresAt: item.expiry_date || undefined,
+            image: item.image_url || "/placeholder.svg",
+            images: (item as any).images || [],
+            sellerName: profileMap.get(item.seller_id) || "বিক্রেতা",
+          }))
+        );
+      }
+    };
+    fetchRecent();
+  }, []);
 
   return (
     <Layout>
