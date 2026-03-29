@@ -93,7 +93,7 @@ const PostItem = () => {
       division,
       address,
       seller_id: user.id,
-      status: "active",
+      status: "pending",
       image_url: uploadedUrls[0] || null,
       images: uploadedUrls,
     } as any);
@@ -102,7 +102,7 @@ const PostItem = () => {
     if (error) {
       toast.error("পোস্ট করতে সমস্যা হয়েছে: " + error.message);
     } else {
-      toast.success("পণ্য সফলভাবে পোস্ট হয়েছে!");
+      toast.success("পণ্য পোস্ট হয়েছে! অ্যাডমিন অনুমোদনের পর দেখা যাবে।");
       navigate("/dashboard/seller");
     }
   };

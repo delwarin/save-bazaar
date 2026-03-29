@@ -1,0 +1,1 @@
+ALTER TABLE public.items ALTER COLUMN status SET DEFAULT 'pending';
