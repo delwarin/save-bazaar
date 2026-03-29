@@ -308,6 +308,13 @@ const AdminDashboard = () => {
             </Button>
           </div>
         )}
+        {showActions && item.status === "rejected" && isAdmin && (
+          <div className="flex gap-2 mt-3">
+            <Button size="sm" variant="default" className="gap-1 h-8" onClick={() => handleApprove(item.id)} disabled={actionLoading === item.id}>
+              <Check className="h-3.5 w-3.5" /> পুনরায় অনুমোদন
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
