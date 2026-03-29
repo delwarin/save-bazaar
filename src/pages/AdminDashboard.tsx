@@ -315,6 +315,13 @@ const AdminDashboard = () => {
             </Button>
           </div>
         )}
+        {showActions && item.status === "active" && (isAdmin || isModerator) && (
+          <div className="flex gap-2 mt-3">
+            <Button size="sm" variant="destructive" className="gap-1 h-8" onClick={() => handleReject(item.id)} disabled={actionLoading === item.id}>
+              <X className="h-3.5 w-3.5" /> প্রত্যাখ্যান
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -449,7 +456,7 @@ const AdminDashboard = () => {
               ) : allItems.length === 0 ? (
                 <div className="text-center py-12 border rounded-xl bg-card"><p className="text-muted-foreground">কোনো পণ্য নেই</p></div>
               ) : (
-                <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions={item.status === "pending" || item.status === "rejected"} />)}</div>
+                <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
               )}
             </TabsContent>
 
