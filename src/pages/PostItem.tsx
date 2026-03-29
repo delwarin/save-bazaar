@@ -5,11 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, ArrowLeft, X, ImagePlus } from "lucide-react";
+import { Upload, ArrowLeft, X, ImagePlus, MapPin } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { searchAreas } from "@/data/bdAreas";
 
 const PostItem = () => {
   const navigate = useNavigate();
@@ -200,7 +201,7 @@ const PostItem = () => {
           <div className="space-y-2">
             <Label>অবস্থান</Label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select value={division} onValueChange={setDivision}>
+              <Select value={division} onValueChange={(v) => { setDivision(v); setAddress(""); }}>
                 <SelectTrigger><SelectValue placeholder="বিভাগ" /></SelectTrigger>
                 <SelectContent>
                   {["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ"].map((d) => (
@@ -208,7 +209,36 @@ const PostItem = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Input placeholder="এলাকা (যেমন: গুলশান)" value={address} onChange={(e) => setAddress(e.target.value)} />
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="এলাকা খুঁজুন..."
+                  className="pl-9"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  autoComplete="off"
+                />
+                {address.length > 0 && division && (() => {
+                  const suggestions = searchAreas(division, address);
+                  // Only show dropdown if there are matches and user hasn't selected an exact match
+                  if (suggestions.length === 0 || (suggestions.length === 1 && suggestions[0] === address)) return null;
+                  return (
+                    <div className="absolute z-50 top-full mt-1 w-full max-h-48 overflow-y-auto rounded-lg border bg-popover shadow-md">
+                      {suggestions.slice(0, 10).map((area) => (
+                        <button
+                          key={area}
+                          type="button"
+                          onClick={() => setAddress(area)}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center gap-2"
+                        >
+                          <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                          <span>{area}</span>
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
           </div>
 
