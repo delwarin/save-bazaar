@@ -323,46 +323,43 @@ const AdminDashboard = () => {
             )}
           </div>
         ) : (
-        <Tabs defaultValue="pending" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="pending" className="gap-1">
-              <Clock className="h-4 w-4" /> অপেক্ষমাণ ({pendingItems.length})
-            </TabsTrigger>
-            <TabsTrigger value="all" className="gap-1">
-              <Package className="h-4 w-4" /> সকল পণ্য
-            </TabsTrigger>
-            <TabsTrigger value="users" className="gap-1">
-              <UserCog className="h-4 w-4" /> ব্যবহারকারী
-            </TabsTrigger>
-          </TabsList>
-          </TabsList>
+          <Tabs defaultValue="pending" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="pending" className="gap-1">
+                <Clock className="h-4 w-4" /> অপেক্ষমাণ ({pendingItems.length})
+              </TabsTrigger>
+              <TabsTrigger value="all" className="gap-1">
+                <Package className="h-4 w-4" /> সকল পণ্য
+              </TabsTrigger>
+              <TabsTrigger value="users" className="gap-1">
+                <UserCog className="h-4 w-4" /> ব্যবহারকারী
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="pending">
-            {loading ? (
-              <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
-            ) : pendingItems.length === 0 ? (
-              <div className="text-center py-12 border rounded-xl bg-card">
-                <Check className="h-12 w-12 text-primary mx-auto mb-3" />
-                <p className="text-muted-foreground">কোনো অপেক্ষমাণ পণ্য নেই</p>
-              </div>
-            ) : (
-              <div className="space-y-3">{pendingItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
-            )}
-          </TabsContent>
+            <TabsContent value="pending">
+              {loading ? (
+                <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
+              ) : pendingItems.length === 0 ? (
+                <div className="text-center py-12 border rounded-xl bg-card">
+                  <Check className="h-12 w-12 text-primary mx-auto mb-3" />
+                  <p className="text-muted-foreground">কোনো অপেক্ষমাণ পণ্য নেই</p>
+                </div>
+              ) : (
+                <div className="space-y-3">{pendingItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
+              )}
+            </TabsContent>
 
-          <TabsContent value="all">
-            {loading ? (
-              <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
-            ) : allItems.length === 0 ? (
-              <div className="text-center py-12 border rounded-xl bg-card"><p className="text-muted-foreground">কোনো পণ্য নেই</p></div>
-            ) : (
-              <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions={item.status === "pending"} />)}</div>
-            )}
-          </TabsContent>
+            <TabsContent value="all">
+              {loading ? (
+                <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
+              ) : allItems.length === 0 ? (
+                <div className="text-center py-12 border rounded-xl bg-card"><p className="text-muted-foreground">কোনো পণ্য নেই</p></div>
+              ) : (
+                <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions={item.status === "pending"} />)}</div>
+              )}
+            </TabsContent>
 
-          {isAdmin && (
             <TabsContent value="users">
-              {/* Add User Button + Dialog */}
               <div className="flex justify-end mb-4">
                 <Dialog open={showAddUser} onOpenChange={setShowAddUser}>
                   <DialogTrigger asChild>
@@ -482,7 +479,7 @@ const AdminDashboard = () => {
                 </div>
               )}
             </TabsContent>
-        </Tabs>
+          </Tabs>
         )}
       </div>
     </Layout>
