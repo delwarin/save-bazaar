@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Package, Eye, User, Settings, BarChart3 } from "lucide-react";
+import { Plus, Package, Eye, User, Settings, BarChart3, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import type { Tables } from "@/integrations/supabase/types";
@@ -83,12 +83,12 @@ const SellerDashboard = () => {
             </div>
           </div>
           <div className="rounded-xl border bg-card p-5 flex items-center gap-4">
-            <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-              <BarChart3 className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
+              <Clock className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{items.filter(i => i.is_free).length}</p>
-              <p className="text-sm text-muted-foreground">বিনামূল্যে পণ্য</p>
+              <p className="text-2xl font-bold text-foreground">{items.filter(i => i.status === "pending").length}</p>
+              <p className="text-sm text-muted-foreground">অপেক্ষমাণ</p>
             </div>
           </div>
         </div>
@@ -107,24 +107,34 @@ const SellerDashboard = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((item) => (
+              <div key={item.id} className="relative">
+                {item.status !== "active" && (
+                  <div className="absolute top-3 right-3 z-10">
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                      item.status === "pending" ? "bg-accent/90 text-accent-foreground" : "bg-destructive/90 text-destructive-foreground"
+                    }`}>
+                      {item.status === "pending" ? "অপেক্ষমাণ" : "প্রত্যাখ্যাত"}
+                    </span>
+                  </div>
+                )}
                 <ProductCard
-                key={item.id}
-                item={{
-                  id: item.id,
-                  title: item.title,
-                  description: item.description || "",
-                  price: item.price ?? 0,
-                  originalPrice: undefined,
-                  image: item.image_url || "/placeholder.svg",
-                  images: (item as any).images || [],
-                  sellerName: sellerName,
-                  location: item.division,
-                  postedAt: new Date(item.created_at).toLocaleDateString("bn-BD"),
-                  expiresAt: item.expiry_date || undefined,
-                  isFree: item.is_free ?? false,
-                  category: item.category as any,
-                }}
-              />
+                  item={{
+                    id: item.id,
+                    title: item.title,
+                    description: item.description || "",
+                    price: item.price ?? 0,
+                    originalPrice: undefined,
+                    image: item.image_url || "/placeholder.svg",
+                    images: (item as any).images || [],
+                    sellerName: sellerName,
+                    location: item.division,
+                    postedAt: new Date(item.created_at).toLocaleDateString("bn-BD"),
+                    expiresAt: item.expiry_date || undefined,
+                    isFree: item.is_free ?? false,
+                    category: item.category as any,
+                  }}
+                />
+              </div>
             ))}
           </div>
         )}
