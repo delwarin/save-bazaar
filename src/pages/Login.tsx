@@ -32,7 +32,7 @@ const Login = () => {
       .single();
 
     toast.success("লগইন সফল!");
-    if (roleData?.role === "admin") {
+    if (roleData?.role === "admin" || roleData?.role === "moderator") {
       navigate("/dashboard/admin");
     } else if (roleData?.role === "seller") {
       navigate("/dashboard/seller");
