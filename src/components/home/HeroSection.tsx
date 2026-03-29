@@ -6,7 +6,7 @@ const HeroSection = () => (
   <section className="bg-hero-gradient">
     <div className="container py-14 md:py-20 text-center text-primary-foreground">
       <h1 className="text-3xl md:text-5xl font-extrabold leading-tight mb-4 animate-fade-in-up">
-        খাবার নষ্ট করবেন না, <span className="text-accent">বিক্রি করুন</span>
+        অপচয় কমান, <span className="text-accent">সম্প্রদায়কে</span> সাহায্য করুন
       </h1>
       <p className="text-base md:text-lg opacity-90 max-w-xl mx-auto mb-8 leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
         মেয়াদ শেষের আগে খাবার, পুরাতন কাপড় ও বই — বিনামূল্যে পোস্ট করুন, সাশ্রয়ী মূল্যে বিক্রি করুন
