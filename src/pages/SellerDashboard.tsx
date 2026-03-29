@@ -41,8 +41,12 @@ const SellerDashboard = () => {
       <div className="bg-card border-b">
         <div className="container py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <User className="h-7 w-7" />
+            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center text-primary overflow-hidden">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt={sellerName} className="h-full w-full object-cover" />
+              ) : (
+                <User className="h-7 w-7" />
+              )}
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">{sellerName}</h1>

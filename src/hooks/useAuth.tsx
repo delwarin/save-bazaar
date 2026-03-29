@@ -2,11 +2,17 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
+interface Profile {
+  full_name: string | null;
+  division: string | null;
+  avatar_url: string | null;
+}
+
 interface AuthContextType {
   user: User | null;
   isReady: boolean;
   role: string | null;
-  profile: { full_name: string | null; division: string | null } | null;
+  profile: Profile | null;
   signOut: () => Promise<void>;
 }
 
@@ -22,11 +28,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [role, setRole] = useState<string | null>(null);
-  const [profile, setProfile] = useState<{ full_name: string | null; division: string | null } | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   const fetchUserData = (userId: string) => {
-    // Fire and forget - no await in auth callback
-    supabase.from("profiles").select("full_name, division").eq("user_id", userId).single()
+    supabase.from("profiles").select("full_name, division, avatar_url").eq("user_id", userId).single()
       .then(({ data }) => { if (data) setProfile(data); });
     supabase.from("user_roles").select("role").eq("user_id", userId).limit(1).single()
       .then(({ data }) => { if (data) setRole(data.role); });
