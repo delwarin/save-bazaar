@@ -345,6 +345,62 @@ const AdminDashboard = () => {
 
           {isAdmin && (
             <TabsContent value="users">
+              {/* Add User Button + Dialog */}
+              <div className="flex justify-end mb-4">
+                <Dialog open={showAddUser} onOpenChange={setShowAddUser}>
+                  <DialogTrigger asChild>
+                    <Button variant="hero" className="gap-1.5">
+                      <UserPlus className="h-4 w-4" /> নতুন ব্যবহারকারী
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>নতুন ব্যবহারকারী তৈরি করুন</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-3 pt-2">
+                      <div className="space-y-1.5">
+                        <Label>পুরো নাম</Label>
+                        <Input placeholder="নাম লিখুন" value={newUser.full_name} onChange={(e) => setNewUser((p) => ({ ...p, full_name: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>ইমেইল</Label>
+                        <Input type="email" placeholder="email@example.com" value={newUser.email} onChange={(e) => setNewUser((p) => ({ ...p, email: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>পাসওয়ার্ড</Label>
+                        <Input type="password" placeholder="কমপক্ষে ৬ অক্ষর" value={newUser.password} onChange={(e) => setNewUser((p) => ({ ...p, password: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>ভূমিকা</Label>
+                        <Select value={newUser.role} onValueChange={(v) => setNewUser((p) => ({ ...p, role: v }))}>
+                          <SelectTrigger><SelectValue placeholder="ভূমিকা বাছুন" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="buyer">ক্রেতা</SelectItem>
+                            <SelectItem value="seller">বিক্রেতা</SelectItem>
+                            <SelectItem value="moderator">ম্যানেজার</SelectItem>
+                            <SelectItem value="admin">অ্যাডমিন</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>বিভাগ</Label>
+                        <Select value={newUser.division} onValueChange={(v) => setNewUser((p) => ({ ...p, division: v }))}>
+                          <SelectTrigger><SelectValue placeholder="বিভাগ বাছুন" /></SelectTrigger>
+                          <SelectContent>
+                            {["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ"].map((d) => (
+                              <SelectItem key={d} value={d}>{d}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button className="w-full" onClick={handleCreateUser} disabled={creating}>
+                        {creating ? "তৈরি হচ্ছে..." : "ব্যবহারকারী তৈরি করুন"}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
               {loading ? (
                 <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
               ) : users.length === 0 ? (
