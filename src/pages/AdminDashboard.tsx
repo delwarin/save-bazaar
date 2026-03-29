@@ -48,9 +48,47 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [roleToAdd, setRoleToAdd] = useState<Record<string, string>>({});
+  const [showAddUser, setShowAddUser] = useState(false);
+  const [newUser, setNewUser] = useState({ full_name: "", email: "", password: "", division: "", role: "" });
+  const [creating, setCreating] = useState(false);
 
   const isAdmin = role === "admin";
   const isModerator = role === "moderator";
+
+  const handleCreateUser = async () => {
+    if (!newUser.email || !newUser.password || !newUser.full_name || !newUser.role) {
+      toast.error("সব ফিল্ড পূরণ করুন");
+      return;
+    }
+    if (newUser.password.length < 6) {
+      toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে");
+      return;
+    }
+    setCreating(true);
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-create-user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newUser),
+    });
+
+    const result = await res.json();
+    setCreating(false);
+
+    if (!res.ok) {
+      toast.error("ব্যবহারকারী তৈরি ব্যর্থ: " + (result.error || "Unknown error"));
+    } else {
+      toast.success("নতুন ব্যবহারকারী তৈরি হয়েছে!");
+      setNewUser({ full_name: "", email: "", password: "", division: "", role: "" });
+      setShowAddUser(false);
+      fetchData();
+    }
+  };
 
   const fetchData = async () => {
     if (!user || (!isAdmin && !isModerator)) return;
