@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigate } from "react-router-dom";
-import { Shield, Users, Package, ShoppingBag, Check, X, Clock, UserCog, Trash2, UserPlus } from "lucide-react";
+import { Shield, Users, Package, ShoppingBag, Check, X, Clock, UserCog, Trash2, UserPlus, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
