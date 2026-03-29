@@ -315,6 +315,13 @@ const AdminDashboard = () => {
             </Button>
           </div>
         )}
+        {showActions && item.status === "active" && (isAdmin || isModerator) && (
+          <div className="flex gap-2 mt-3">
+            <Button size="sm" variant="destructive" className="gap-1 h-8" onClick={() => handleReject(item.id)} disabled={actionLoading === item.id}>
+              <X className="h-3.5 w-3.5" /> প্রত্যাখ্যান
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
