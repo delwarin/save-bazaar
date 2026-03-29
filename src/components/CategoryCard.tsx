@@ -18,8 +18,8 @@ const CategoryCard = ({ icon, title, description, href, count }: CategoryCardPro
       {icon}
     </div>
     <h3 className="text-lg font-bold text-card-foreground mb-1">{title}</h3>
-    <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{description}</p>
-    <span className="text-xs font-medium text-primary">{count}+ পণ্য পাওয়া যাচ্ছে →</span>
+    <p className="text-sm text-muted-foreground mb-3 leading-relaxed flex-1">{description}</p>
+    <span className="text-xs font-medium text-primary mt-auto">{count}+ পণ্য পাওয়া যাচ্ছে →</span>
   </Link>
 );
 
