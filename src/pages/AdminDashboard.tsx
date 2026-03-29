@@ -149,6 +149,46 @@ const AdminDashboard = () => {
       );
     }
 
+    // Fetch moderator's own orders
+    if (isModerator && user) {
+      const { data: orderData } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("buyer_id", user.id)
+        .neq("status", "cancelled")
+        .order("created_at", { ascending: false });
+
+      if (orderData && orderData.length > 0) {
+        const itemIds = [...new Set(orderData.map((o) => o.item_id))];
+        const { data: itemsData } = await supabase
+          .from("items")
+          .select("id, title, image_url, price, is_free, seller_id")
+          .in("id", itemIds);
+
+        const itemMap = new Map(itemsData?.map((i) => [i.id, i]) || []);
+        const sellerIdsForOrders = [...new Set(itemsData?.map((i) => i.seller_id) || [])];
+        const { data: sellerProfiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name")
+          .in("user_id", sellerIdsForOrders);
+        const sellerMap = new Map(sellerProfiles?.map((p) => [p.user_id, p.full_name]) || []);
+
+        setModOrders(
+          orderData.map((o) => {
+            const item = itemMap.get(o.item_id);
+            return {
+              ...o,
+              item_title: item?.title || "পণ্য",
+              item_image: item?.image_url || "/placeholder.svg",
+              item_price: item?.price || 0,
+              item_is_free: item?.is_free || false,
+              seller_name: item ? sellerMap.get(item.seller_id) || "বিক্রেতা" : "বিক্রেতা",
+            };
+          })
+        );
+      }
+    }
+
     setLoading(false);
   };
 
