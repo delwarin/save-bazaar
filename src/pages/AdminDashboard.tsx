@@ -349,20 +349,66 @@ const AdminDashboard = () => {
         )}
 
         {isModerator ? (
-          /* Moderator only sees pending items */
-          <div>
-            <h2 className="text-xl font-bold text-foreground mb-4">অপেক্ষমাণ পণ্য ({pendingItems.length})</h2>
-            {loading ? (
-              <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
-            ) : pendingItems.length === 0 ? (
-              <div className="text-center py-12 border rounded-xl bg-card">
-                <Check className="h-12 w-12 text-primary mx-auto mb-3" />
-                <p className="text-muted-foreground">কোনো অপেক্ষমাণ পণ্য নেই</p>
-              </div>
-            ) : (
-              <div className="space-y-3">{pendingItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
-            )}
-          </div>
+          <Tabs defaultValue="approval" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="approval" className="gap-1">
+                <Clock className="h-4 w-4" /> পণ্য অনুমোদন ({pendingItems.length})
+              </TabsTrigger>
+              <TabsTrigger value="my-orders" className="gap-1">
+                <ShoppingBag className="h-4 w-4" /> আমার অর্ডার ({modOrders.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="approval">
+              {loading ? (
+                <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
+              ) : pendingItems.length === 0 ? (
+                <div className="text-center py-12 border rounded-xl bg-card">
+                  <Check className="h-12 w-12 text-primary mx-auto mb-3" />
+                  <p className="text-muted-foreground">কোনো অপেক্ষমাণ পণ্য নেই</p>
+                </div>
+              ) : (
+                <div className="space-y-3">{pendingItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="my-orders">
+              {loading ? (
+                <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
+              ) : modOrders.length === 0 ? (
+                <div className="text-center py-12 border rounded-xl bg-card">
+                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground">এখনও কোনো অর্ডার নেই</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {modOrders.map((order) => (
+                    <div key={order.id} className="flex gap-4 p-4 border rounded-xl bg-background">
+                      <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
+                        <img src={order.item_image} alt={order.item_title} className="h-full w-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground text-sm line-clamp-1">{order.item_title}</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">বিক্রেতা: {order.seller_name}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="outline" className={
+                            order.status === "pending" ? "bg-accent/20 text-accent-foreground" :
+                            order.status === "completed" ? "bg-primary/10 text-primary" :
+                            "bg-muted text-muted-foreground"
+                          }>
+                            {order.status === "cart" ? "কার্টে" : order.status === "pending" ? "প্রক্রিয়াধীন" : order.status === "completed" ? "সম্পন্ন" : order.status}
+                          </Badge>
+                          <span className="text-sm font-bold text-primary">
+                            {order.item_is_free ? "বিনামূল্যে" : `৳${order.item_price}`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         ) : (
           <Tabs defaultValue="pending" className="space-y-4">
             <TabsList>
