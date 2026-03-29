@@ -19,7 +19,7 @@ const HeroSection = () => (
           </Button>
         </Link>
         <Link to="/category/food">
-          <Button variant="outline" size="lg" className="rounded-xl h-11 px-6 text-base border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+          <Button variant="outline" size="lg" className="rounded-xl h-11 px-6 text-base border-primary-foreground/40 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground">
             পণ্য দেখুন
             <ArrowRight className="h-4 w-4 ml-1" />
           </Button>
