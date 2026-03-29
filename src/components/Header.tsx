@@ -17,7 +17,7 @@ const Header = () => {
   const location = useLocation();
   const { user, role, profile, signOut } = useAuth();
 
-  const dashboardLink = role === "admin" ? "/dashboard/admin" : role === "seller" ? "/dashboard/seller" : "/dashboard/buyer";
+  const dashboardLink = role === "admin" || role === "moderator" ? "/dashboard/admin" : role === "seller" ? "/dashboard/seller" : "/dashboard/buyer";
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
