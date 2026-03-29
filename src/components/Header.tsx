@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ShoppingBag, ShoppingCart, LogIn, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, ShoppingBag, ShoppingCart, LogIn, LogOut, LayoutDashboard, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
@@ -51,7 +51,11 @@ const Header = () => {
               </Link>
               <Link to={dashboardLink}>
                 <Button variant="outline" size="sm" className="gap-1.5">
-                  <LayoutDashboard className="h-4 w-4" />
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
+                  ) : (
+                    <LayoutDashboard className="h-4 w-4" />
+                  )}
                   {profile?.full_name || "ড্যাশবোর্ড"}
                 </Button>
               </Link>
