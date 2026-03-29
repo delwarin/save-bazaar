@@ -290,37 +290,27 @@ const AdminDashboard = () => {
       </div>
 
       <div className="container py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          {statCards.map((s, i) => (
-            <div key={i} className={`rounded-xl border bg-card p-5 flex items-center gap-4 ${s.highlight ? "border-accent ring-1 ring-accent/20" : ""}`}>
-              <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${s.highlight ? "bg-accent/20 text-accent" : "bg-primary/10 text-primary"}`}>
-                {s.icon}
+        {/* Stats - hide for moderator */}
+        {isAdmin && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            {statCards.map((s, i) => (
+              <div key={i} className={`rounded-xl border bg-card p-5 flex items-center gap-4 ${s.highlight ? "border-accent ring-1 ring-accent/20" : ""}`}>
+                <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${s.highlight ? "bg-accent/20 text-accent" : "bg-primary/10 text-primary"}`}>
+                  {s.icon}
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">{s.value}</p>
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{s.value}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        <Tabs defaultValue="pending" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="pending" className="gap-1">
-              <Clock className="h-4 w-4" /> অপেক্ষমাণ ({pendingItems.length})
-            </TabsTrigger>
-            <TabsTrigger value="all" className="gap-1">
-              <Package className="h-4 w-4" /> সকল পণ্য
-            </TabsTrigger>
-            {isAdmin && (
-              <TabsTrigger value="users" className="gap-1">
-                <UserCog className="h-4 w-4" /> ব্যবহারকারী
-              </TabsTrigger>
-            )}
-          </TabsList>
-
-          <TabsContent value="pending">
+        {isModerator ? (
+          /* Moderator only sees pending items */
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-4">অপেক্ষমাণ পণ্য ({pendingItems.length})</h2>
             {loading ? (
               <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
             ) : pendingItems.length === 0 ? (
@@ -331,21 +321,45 @@ const AdminDashboard = () => {
             ) : (
               <div className="space-y-3">{pendingItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
             )}
-          </TabsContent>
+          </div>
+        ) : (
+          <Tabs defaultValue="pending" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="pending" className="gap-1">
+                <Clock className="h-4 w-4" /> অপেক্ষমাণ ({pendingItems.length})
+              </TabsTrigger>
+              <TabsTrigger value="all" className="gap-1">
+                <Package className="h-4 w-4" /> সকল পণ্য
+              </TabsTrigger>
+              <TabsTrigger value="users" className="gap-1">
+                <UserCog className="h-4 w-4" /> ব্যবহারকারী
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="all">
-            {loading ? (
-              <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
-            ) : allItems.length === 0 ? (
-              <div className="text-center py-12 border rounded-xl bg-card"><p className="text-muted-foreground">কোনো পণ্য নেই</p></div>
-            ) : (
-              <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions={item.status === "pending"} />)}</div>
-            )}
-          </TabsContent>
+            <TabsContent value="pending">
+              {loading ? (
+                <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
+              ) : pendingItems.length === 0 ? (
+                <div className="text-center py-12 border rounded-xl bg-card">
+                  <Check className="h-12 w-12 text-primary mx-auto mb-3" />
+                  <p className="text-muted-foreground">কোনো অপেক্ষমাণ পণ্য নেই</p>
+                </div>
+              ) : (
+                <div className="space-y-3">{pendingItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
+              )}
+            </TabsContent>
 
-          {isAdmin && (
+            <TabsContent value="all">
+              {loading ? (
+                <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
+              ) : allItems.length === 0 ? (
+                <div className="text-center py-12 border rounded-xl bg-card"><p className="text-muted-foreground">কোনো পণ্য নেই</p></div>
+              ) : (
+                <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions={item.status === "pending"} />)}</div>
+              )}
+            </TabsContent>
+
             <TabsContent value="users">
-              {/* Add User Button + Dialog */}
               <div className="flex justify-end mb-4">
                 <Dialog open={showAddUser} onOpenChange={setShowAddUser}>
                   <DialogTrigger asChild>
@@ -465,8 +479,8 @@ const AdminDashboard = () => {
                 </div>
               )}
             </TabsContent>
-          )}
-        </Tabs>
+          </Tabs>
+        )}
       </div>
     </Layout>
   );
