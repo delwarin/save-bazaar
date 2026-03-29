@@ -51,6 +51,7 @@ const AdminDashboard = () => {
   const [showAddUser, setShowAddUser] = useState(false);
   const [newUser, setNewUser] = useState({ full_name: "", email: "", password: "", division: "", role: "" });
   const [creating, setCreating] = useState(false);
+  const [modOrders, setModOrders] = useState<any[]>([]);
 
   const isAdmin = role === "admin";
   const isModerator = role === "moderator";
