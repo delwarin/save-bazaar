@@ -456,7 +456,7 @@ const AdminDashboard = () => {
               ) : allItems.length === 0 ? (
                 <div className="text-center py-12 border rounded-xl bg-card"><p className="text-muted-foreground">কোনো পণ্য নেই</p></div>
               ) : (
-                <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions={item.status === "pending" || item.status === "rejected"} />)}</div>
+                <div className="space-y-3">{allItems.map((item) => <ItemRow key={item.id} item={item} showActions />)}</div>
               )}
             </TabsContent>
 
