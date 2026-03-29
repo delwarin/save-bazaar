@@ -3,12 +3,15 @@ import Layout from "@/components/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigate } from "react-router-dom";
-import { Shield, Users, Package, ShoppingBag, Check, X, Clock, UserCog, Trash2 } from "lucide-react";
+import { Shield, Users, Package, ShoppingBag, Check, X, Clock, UserCog, Trash2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface ItemWithSeller {
   id: string;
@@ -45,9 +48,47 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [roleToAdd, setRoleToAdd] = useState<Record<string, string>>({});
+  const [showAddUser, setShowAddUser] = useState(false);
+  const [newUser, setNewUser] = useState({ full_name: "", email: "", password: "", division: "", role: "" });
+  const [creating, setCreating] = useState(false);
 
   const isAdmin = role === "admin";
   const isModerator = role === "moderator";
+
+  const handleCreateUser = async () => {
+    if (!newUser.email || !newUser.password || !newUser.full_name || !newUser.role) {
+      toast.error("সব ফিল্ড পূরণ করুন");
+      return;
+    }
+    if (newUser.password.length < 6) {
+      toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে");
+      return;
+    }
+    setCreating(true);
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-create-user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newUser),
+    });
+
+    const result = await res.json();
+    setCreating(false);
+
+    if (!res.ok) {
+      toast.error("ব্যবহারকারী তৈরি ব্যর্থ: " + (result.error || "Unknown error"));
+    } else {
+      toast.success("নতুন ব্যবহারকারী তৈরি হয়েছে!");
+      setNewUser({ full_name: "", email: "", password: "", division: "", role: "" });
+      setShowAddUser(false);
+      fetchData();
+    }
+  };
 
   const fetchData = async () => {
     if (!user || (!isAdmin && !isModerator)) return;
@@ -304,6 +345,62 @@ const AdminDashboard = () => {
 
           {isAdmin && (
             <TabsContent value="users">
+              {/* Add User Button + Dialog */}
+              <div className="flex justify-end mb-4">
+                <Dialog open={showAddUser} onOpenChange={setShowAddUser}>
+                  <DialogTrigger asChild>
+                    <Button variant="hero" className="gap-1.5">
+                      <UserPlus className="h-4 w-4" /> নতুন ব্যবহারকারী
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>নতুন ব্যবহারকারী তৈরি করুন</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-3 pt-2">
+                      <div className="space-y-1.5">
+                        <Label>পুরো নাম</Label>
+                        <Input placeholder="নাম লিখুন" value={newUser.full_name} onChange={(e) => setNewUser((p) => ({ ...p, full_name: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>ইমেইল</Label>
+                        <Input type="email" placeholder="email@example.com" value={newUser.email} onChange={(e) => setNewUser((p) => ({ ...p, email: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>পাসওয়ার্ড</Label>
+                        <Input type="password" placeholder="কমপক্ষে ৬ অক্ষর" value={newUser.password} onChange={(e) => setNewUser((p) => ({ ...p, password: e.target.value }))} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>ভূমিকা</Label>
+                        <Select value={newUser.role} onValueChange={(v) => setNewUser((p) => ({ ...p, role: v }))}>
+                          <SelectTrigger><SelectValue placeholder="ভূমিকা বাছুন" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="buyer">ক্রেতা</SelectItem>
+                            <SelectItem value="seller">বিক্রেতা</SelectItem>
+                            <SelectItem value="moderator">ম্যানেজার</SelectItem>
+                            <SelectItem value="admin">অ্যাডমিন</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label>বিভাগ</Label>
+                        <Select value={newUser.division} onValueChange={(v) => setNewUser((p) => ({ ...p, division: v }))}>
+                          <SelectTrigger><SelectValue placeholder="বিভাগ বাছুন" /></SelectTrigger>
+                          <SelectContent>
+                            {["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ"].map((d) => (
+                              <SelectItem key={d} value={d}>{d}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button className="w-full" onClick={handleCreateUser} disabled={creating}>
+                        {creating ? "তৈরি হচ্ছে..." : "ব্যবহারকারী তৈরি করুন"}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
               {loading ? (
                 <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>
               ) : users.length === 0 ? (
