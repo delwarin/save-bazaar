@@ -18,42 +18,57 @@ const AdminRegister = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!secretCode) {
+
+    const normalizedSecret = secretCode.trim();
+    if (!normalizedSecret) {
       toast.error("সিক্রেট কোড দিন");
       return;
     }
+
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName, role: "admin", division: "ঢাকা" },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-
-    if (error) {
-      toast.error(error.message);
-      setLoading(false);
-      return;
-    }
-
-    if (data.user) {
-      const { data: result } = await supabase.rpc("register_admin", {
-        _user_id: data.user.id,
-        _secret: secretCode,
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: { full_name: fullName.trim(), role: "admin", division: "ঢাকা" },
+          emailRedirectTo: window.location.origin,
+        },
       });
 
-      if (result) {
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      const userId = data.user?.id;
+      if (!userId) {
+        toast.error("রেজিস্ট্রেশন সম্পন্ন হয়নি, আবার চেষ্টা করুন");
+        return;
+      }
+
+      const { data: result, error: rpcError } = await supabase.rpc("register_admin", {
+        _user_id: userId,
+        _secret: normalizedSecret,
+      });
+
+      if (rpcError) {
+        console.error("register_admin error:", rpcError);
+        toast.error("সার্ভার সমস্যা হয়েছে, আবার চেষ্টা করুন");
+        return;
+      }
+
+      if (result === true) {
         toast.success("অ্যাডমিন নিবন্ধন সফল!");
         navigate("/dashboard/admin");
-      } else {
-        toast.error("সিক্রেট কোড ভুল!");
+        return;
       }
-    }
 
-    setLoading(false);
+      toast.error("সিক্রেট কোড ভুল!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
